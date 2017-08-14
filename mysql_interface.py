@@ -1,6 +1,6 @@
 import os
 import sys
-operations = ["help", "create table", "delete table", "add data", "run", "quit"]
+operations = ["help", "create table", "delete table", "add data", "delete data", "run", "quit"]
 source = "to_do.sql" # I'm using a variable as it will save time
 def add_to_file(source, text):
     with open(source, "r") as read:
@@ -62,7 +62,15 @@ while ready == False:
             print("Please enter each variable and the value of each variable.")
             while done != True:
                 variables.append(input("Please enter the variable."))
-                values.append(input("What is the value of this variable"))
+                value = input("What is the value of this variable")
+                type = input("Is the variable a string or an integer?")
+                type = type.lower()
+                while type != "string" and type != "integer":
+                    type = input("Please enter either string or integer")
+                    type = type.lower()
+                if type == "string":
+                    value = "\"" + value + "\""
+                values.append(value)
                 done = input("Do you want to add in any other values?\n")
                 done = done.lower()
                 while done != "yes" and done != "no":
@@ -73,6 +81,18 @@ while ready == False:
             variables = ", ".join(variables)
             values = ", ".join(values)
             add_to_file(source, "INSERT INTO " + table + " (" + variables + ") VALUES (" + values + ");")
+        elif do == "delete data":
+            table = input("Which table do you want to delete data from?")
+            value = input("What is the value you want to delete?")
+            variable = input("What variable is it under?")
+            type = input("Is the variable a string or an integer?")
+            type = type.lower()
+            while type != "string" and type != "integer":
+                type = input("Please enter either string or integer")
+                type = type.lower()
+            if type == "string":
+                value = "\"" + value + "\""
+            add_to_file(source, "DELETE FROM " + table + " WHERE " + variable + " = " + value +";")
         elif do == "run":
             os.system("mysql -u " + user + " -p < to_do.sql")
         elif do == "quit":
