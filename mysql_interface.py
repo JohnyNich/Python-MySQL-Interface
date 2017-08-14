@@ -1,6 +1,6 @@
 import os
 import sys
-operations = ["help", "create table", "run", "quit", "add data"]
+operations = ["help", "create table", "delete table", "add data", "run", "quit"]
 source = "to_do.sql" # I'm using a variable as it will save time
 def add_to_file(source, text):
     with open(source, "r") as read:
@@ -51,13 +51,30 @@ while ready == False:
             values = ", ".join(values_list)
             print(values)
             add_to_file(source, "CREATE TABLE " + table_name + " (" + values + ");")
+        elif do == "delete table":
+            table = input("What is the table you want to delete?")
+            add_to_file(source, "DROP TABLE " + table)
+        elif do == "add data":
+            done = False
+            variables = []
+            values = []
+            table = input("Which table do you want to add to?\n")
+            print("Please enter each variable and the value of each variable.")
+            while done != True:
+                variables.append(input("Please enter the variable."))
+                values.append(input("What is the value of this variable"))
+                done = input("Do you want to add in any other values?\n")
+                done = done.lower()
+                while done != "yes" and done != "no":
+                    done = input("Please enter either yes or no\n")
+                    done = done.lower()
+                if done == "no":
+                    done = True
+            variables = ", ".join(variables)
+            values = ", ".join(values)
+            add_to_file(source, "INSERT INTO " + table + " (" + variables + ") VALUES (" + values + ");")
         elif do == "run":
             os.system("mysql -u " + user + " -p < to_do.sql")
-        elif do == 'add data': # Note: Work in progress
-            table = input("Which table do you want to add")
-            value_orders = input("What is the order of values?")
-            values = input("What are the values? Enter these with a comma in between each value")
-            add_to_file(source, "INSERT INTO " + table + " (" + value_orders + ") VALUES (" + values + ");")
         elif do == "quit":
             sys.exit()
 
